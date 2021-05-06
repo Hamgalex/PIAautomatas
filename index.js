@@ -27,26 +27,33 @@ input.addEventListener('change',function(e){
         var numlineas=res.length;
         console.log(res);
        
+        //checa que no haya lineas en blanco 
         checarSaltosDeLinea(numlineas);
 
-        checarEstructuraPrograma(numlineas);
+        //tenemos asegurado que no hay lineas en blanco
+        if(error==false)checarPalabrasReservadas(numlineas);
 
-        checarInstruccionesRepetidas(numlineas);
+        //tenemos asegurado que no hay lineas en blanco && que todas las lineas tienen palabras reservadas
+        if(error==false)checarInstruccionesRepetidas(numlineas);
+
+        //tenemos asegurado que todas las lineas son válidas y no se repite el programa,iniciar ni terminar.
+        if(error==false)checarEstructuraPrograma(numlineas);
     
-        checarInstruccionesValidas(numlineas);
+        //-if(error==false)checarInstruccionesValidas(numlineas);   <----- creo que esto esta de mas
 
-        checarFormatoInstrucciones(numlineas);
+        // si llegamos aqui todo esta bien excepto las instrucciones que deben de esta en las lineas 2 hasta (numlineas-2)
+        if(error==false)checarFormatoInstrucciones(numlineas);
+
         console.log(error);
         console.log(especificacion);
         console.log(tipoerror);
         console.log(variablesActivas);
 
-    
+
 
         if(error==true)
         {
-            document.getElementById("error").innerHTML = error;
-            document.getElementById("tipoerror").innerHTML = tipoerror;    
+            document.getElementById("tipoerror").innerHTML = "Error de "+ tipoerror;    
             document.getElementById("especificacion").innerHTML = especificacion;
         }
         else   
@@ -57,6 +64,7 @@ input.addEventListener('change',function(e){
     }
 },false);
 
+// creo que esta funcion esta de mas, aun asi no hay que borrarla x si se ocupa
 function checarInstruccionesValidas(numlineas){
 
     var i;
@@ -68,20 +76,6 @@ function checarInstruccionesValidas(numlineas){
             tipoerror="";
             especificacion+=", No se reconoce el comando en linea "+(i+1)+":"+res[i];
 
-        }
-    }
-}
-
-function checarInstruccionesRepetidas(numlineas)
-{
-    var i;
-    for(i=2;i<=numlineas-2;i++)
-    {
-        if(res[i].match(/^(programa)/g)!=null || res[i].match(/^(iniciar)/g)!=null || res[i].match(/^(terminar)/g)!=null)
-        {
-            error=true;
-            tipoerror="";
-            especificacion+=", se repiten comandos de cabecera";
         }
     }
 }
@@ -207,11 +201,6 @@ function checarExpresionReemplazandoVariablesActivas(expresion)
     console.log("Expresionfinal:");
     console.log(expresionfinal);
 
-    expresionfinal=expresionfinal.replace(/\+/g,"+");
-    expresionfinal=expresionfinal.replace(/^/g,"+");
-    expresionfinal=expresionfinal.replace(/\-/g,"+");
-    expresionfinal=expresionfinal.replace(/\*/g,"+");
-    expresionfinal=expresionfinal.replace(/\//g,"+");
     
      if(expresionfinal.match(/((\d+|\(\g<1>\))([-+*\/^]\g<1>)?)(\r)$/g)!=null)
     {
@@ -230,64 +219,83 @@ function checarExpresionReemplazandoVariablesActivas(expresion)
 
 }
 
-function checarSaltosDeLinea(numlineas)
-{
-    var i;
-    for(i=0;i<numlineas;i++)
-    {
-        if(res[i].match(/^\r$/g)!=null || res[i].match(/^$/g)!=null) // si hay un \r o no hay nada manda error
-        {
-            error=true;
-            especificacion+=", hay una línea en blanco";
-            tipoerror="";
-            return;
-        }
-    }
-    return;
-}
 
+
+
+// funcion que checa que el nombre del programa sea valido y que tenga solamente "iniciar" y "terminar" en la 2da y ultima línea
+// tengamos en cuenta que si llegamos a esta funcion entonces hay puras lineas con palabras reservadas
 function checarEstructuraPrograma(numlineas)
 {
 
-
-    if(res[0].match(/^(programa )/)==null) // sino escribio la palabra programa
+    if(res[0].match(/^(programa )([a-z])([0-9a-z]*)(;)(\r)$/g)==null) // si no escribio la palabra programa y el nombre tiene formato
     {
         error=true;
-        tipoerror="";
-        especificacion+=", no se encuentra el nombre del programa";
-    }
-    else
-    {
-        if(res[0].match(/^(programa )([a-z])([0-9a-z]*)(;)(\r)$/g)!=null) // si escribio la palabra programa y el nombre tiene formato
-        {
-            console.log("paso el test del nombre del programa");        
-        }
-        else
-        {
-            if(res[0].match(/([a-z])([0-9a-z]*)(;)(\r)$/)==null) // el nombre no tiene formato
-            {
-                error=true;
-                tipoerror="";
-                especificacion+= ", la cebecera del programa no cumple con el formato pedido";
-            }
-            
-        }
+        tipoerror="Sintaxis";
+        especificacion+= ", la cebecera del programa no cumple con el formato pedido";
     }
     if(res[1].match(/^(iniciar)(\r)$/g)==null)
     {
         error=true;
-        tipoerror="";
+        tipoerror="Sintaxis";
         especificacion+=", no se encuentra el inicio del programa";
     }
     if(res[numlineas-1].match(/^(terminar.)$/g)==null)
     {
         error=true;
-        tipoerror="";
+        tipoerror="Sintaxis";
         especificacion+=", no se encuentra la terminación del programa";
     }
 }
 
+//funcion que checa que los comandos de cabecera: programa nombre;, iniciar y terminar. no se repitan
+function checarInstruccionesRepetidas(numlineas)
+{
+    var i;
+    for(i=2;i<=numlineas-2;i++)
+    {
+        if(res[i].match(/^(programa)/g)!=null || res[i].match(/^(iniciar)/g)!=null || res[i].match(/^(terminar)/g)!=null)
+        {
+            error=true;
+            tipoerror="Sintaxis";
+            especificacion+=", se repiten comandos de cabecera";
+        }
+    }
+}
+
+
+// funcion que checará que en cada linea del programa haya palabras reservadas, osea: programa ,iniciar,leer, := ,imprimir y terminar
+// observemos que esta es la única manera que pueda haber un error léxico
+function checarPalabrasReservadas(numlineas)
+{
+    var i;
+    for(i=0;i<numlineas;i++)
+    {
+        if(res[i].match(/^(programa)/g)==null && res[i].match(/^(iniciar)/g)==null && res[i].match(/^(leer)/g)==null && res[i].match(/(:=)/g)==null && res[i].match(/^(imprimir)/g)==null && res[i].match(/^(terminar.)/g)==null )
+        {
+            error=true;
+            tipoerror="Léxico";
+            especificacion+=", Palabra mal escrita:"+res[i];
+        }
+    }
 
 
 
+}
 
+
+// funcion que checa que no haya lineas en blanco
+function checarSaltosDeLinea(numlineas)
+{
+    var i;
+    for(i=0;i<numlineas;i++)
+    {
+        if(res[i].match(/^\r$/g)!=null || res[i].match(/^$/g)!=null || res[i].match(/^( )+(\r)$/g)!=null) // si hay un \r o no hay nada o hay espacios en blanco manda error
+        {
+            error=true;
+            especificacion+=", hay una línea en blanco";
+            tipoerror="Sintaxis";
+            return;
+        }
+    }
+    return;
+}
