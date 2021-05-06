@@ -3,7 +3,7 @@ iniciar
 leer i;
 leer j;
 leer k;
-p := i+j*-2-(*20)*3-25;
-q := k*p/2;
+p := 1+2;
+q := (((((p)))))+1;
 imprimir q;
 terminar.

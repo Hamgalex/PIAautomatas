@@ -1,13 +1,8 @@
-// regex
-var regexNombrePrograma = "([a-z])([0-9a-z]*)";
-var regexNombreIdentificador= "([a-z])([0-9a-z]*)";
-var regexNumero = "([0-9]*)";
-var regexMinusculaONumero = "([a-z0-9])";
-var res;
 
+var res;
 var error=false;
 var tipoerror="";
-var especificacion="Se encontraron varios errores";
+var especificacion="Se encontraron uno o más errores";
 var k=0;
 var numlineas;
 let variablesActivas = new Array ();
@@ -59,6 +54,7 @@ input.addEventListener('change',function(e){
         else   
         document.getElementById("error").innerHTML ="No hay errores";
 
+    
         
            
     }
@@ -115,6 +111,115 @@ function checarFormatoInstrucciones(numlineas)
 
 
 
+
+function checarAsignacion(linea)
+{
+    var variableNuevaActiva;
+    var expresion;
+    var tamaño;
+    var arreglodeexpresion;
+    if(linea.match(/^([a-z])([0-9a-z]*)( := )/)==null || linea.match(/(;)(\r)$/)==null  ) // si el nombre de la variable no es valido o no tiene punto y coma
+    {
+        error=true;
+        tipoerror="Sintaxis";
+        especificacion+=", no se cumple con el formato de variable o asignación";
+
+    }
+    else //si tiene " := " y punto y coma con salto de linea.
+    {
+
+        var exporiginal=linea
+        for(i=0;i<k;i++)
+        {
+            linea=linea.replace(variablesActivas[i],1);   
+            console.log(linea);
+        }
+
+        console.log(linea);
+
+    
+        arreglodeexpresion=linea.split(" ");
+        variableNuevaActiva=arreglodeexpresion[0];
+        
+        expresion=arreglodeexpresion[2];
+
+        expresion=expresion.replace(/\^/g,"**");
+        expresion=expresion.replace(/\+/g,"/");
+        expresion=expresion.replace(/-/g,"/");
+        if(linea.match(/^([a-z])([0-9a-z]*)( := )/)!=null && linea.match(/(;)(\r)$/)!=null && isValid(expresion)==true && expresion.match(/[a-zA-z]/i)==null && expresion.match(/( )/i)==null) // si es valida y tiene el formato
+        {
+         
+            console.log("si es valida: "+expresion);
+        }
+        else
+
+        {
+            console.log("la expresion:"+expresion+":no es valida");
+            error=true;
+            tipoerror="Sintaxis";
+            especificacion+=", error en la expresion aritmética: "+ exporiginal;
+
+        }
+
+        console.log(variableNuevaActiva);
+        console.log(expresion);
+        
+        variablesActivas[k]=variableNuevaActiva;
+        k++;
+    }
+}
+
+//checar si la exp es valida con eval()
+function isValid(origExp) {
+	const exp = (' ' + origExp + ' ')
+		.replace(/([^0-9])[0-9]([^0-9])/gi, '$11$2')
+		.replace(/([^0-9])[0-9]([^0-9])/gi, '$11$2');
+
+	try {
+		return !isNaN(eval(exp));
+	} catch (e) {
+		return false;
+	}
+}
+
+//no sirve de nada esto
+function checarExpresionReemplazandoVariablesActivas(expresion)
+{
+
+    var i;
+    console.log("tamaño del arreglo:" + k);
+
+    console.log("aqui va lo de reemplazar las variables, expresion inicial: "+expresion);
+
+    for(i=0;i<k;i++)
+    {
+        expresion=expresion.replace(variablesActivas[i],1);   
+        console.log(expresion);
+    }
+    var expresionfinal=expresion;
+
+    console.log("Expresionfinal:");
+    console.log(expresionfinal);
+
+    
+     if(expresionfinal.match(/^((\d+|\(\g<1>\))([-+*\/^]\g<1>)?)(;)(\r)$/g)!=null)
+    {
+        console.log("si se pudo");
+    }
+    else
+    {
+        error=true;
+        especificacion+="Error en la expresion aritmetica"+expresion;
+        tipoerror="Sintaxis";
+        console.log("no se pudo");
+        console.log(expresionfinal.match(/^((\d+|\(\g<1>\))([-+*\/^]\g<1>)?)(\r)$/));
+    }
+   
+    
+
+}
+
+
 // se checa que la impresion esté correcta
 function checarImpresion(linea)
 {
@@ -131,74 +236,6 @@ function checarImpresion(linea)
         
             
     }
-}
-
-function checarAsignacion(linea)
-{
-    var variableNuevaActiva;
-    var expresion;
-    var tamaño;
-    var arreglodeexpresion;
-    if(linea.match(/^([a-z])([0-9a-z]*)( := )/)==null || linea.match(/(;)(\r)$/)==null  )
-    {
-        error=true;
-        tipoerror="";
-        especificacion+=", no se cumple con el formato de variable";
-
-    }
-    else
-    {
-        arreglodeexpresion=linea.split(" ");
-        variableNuevaActiva=arreglodeexpresion[0];
-        
-        expresion=arreglodeexpresion[2];
-        expresion=expresion.replace(";",'');
-        console.log(variableNuevaActiva);
-        console.log(expresion);
-        
-        checarExpresionReemplazandoVariablesActivas(expresion)
-        
-
-        variablesActivas[k]=variableNuevaActiva;
-        k++;
-    }
-}
-
-function checarExpresionReemplazandoVariablesActivas(expresion)
-{
-
-    var i;
-    var tamañoarreglo=variablesActivas.lenght;
-    console.log("tamaño del arreglo:" + k);
-    var stringaux;
-
-    console.log("aqui va lo de reemplazar las variables");
-
-    for(i=0;i<k;i++)
-    {
-        expresion=expresion.replace(variablesActivas[i],4);   
-        console.log(expresion);
-    }
-    var expresionfinal=expresion;
-    console.log("Expresionfinal:");
-    console.log(expresionfinal);
-
-    
-     if(expresionfinal.match(/((\d+|\(\g<1>\))([-+*\/^]\g<1>)?)(\r)$/g)!=null)
-    {
-        console.log("si se pudo");
-    }
-    else
-    {
-        error=true;
-        especificacion+="Error en la expresion aritmetica";
-        tipoerror="";
-        console.log("no se pudo");
-        console.log(expresionfinal.match(/^((\d+|\(\g<1>\))([-+*\/^]\g<1>)?)(\r)$/));
-    }
-   
-    
-
 }
 
 //se checa si es correcta la lectura con el formato de variable
