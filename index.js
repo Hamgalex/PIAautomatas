@@ -36,7 +36,7 @@ input.addEventListener('change',function(e){
         //tenemos asegurado que no hay lineas en blanco && que todas las lineas tienen palabras reservadas
         if(error==false)checarInstruccionesRepetidas(numlineas);
 
-        //tenemos asegurado que todas las lineas son válidas y no se repite el programa,iniciar ni terminar.
+        //tenemos asegurado que todas las lineas de cabecera son válidas y no se repite el programa,iniciar ni terminar.
         if(error==false)checarEstructuraPrograma(numlineas);
     
         //-if(error==false)checarInstruccionesValidas(numlineas);   <----- creo que esto esta de mas
@@ -80,6 +80,9 @@ function checarInstruccionesValidas(numlineas){
     }
 }
 
+
+// ahora se checan los tipos de instrucciones, dependiendo si es leer,imprimir o :=
+//
 function checarFormatoInstrucciones(numlineas)
 {
     var i;
@@ -89,18 +92,18 @@ function checarFormatoInstrucciones(numlineas)
         if(res[i].match(/^(leer )/g)!=null)
         {
             tamaño=res[i].length;
-            if(checarLectura(res[i])==true)
+            if(checarLectura(res[i])==true) // si es leer checamos si esta correcto con la funcion checarLectura, si es true entonces esta correcto y guardamos la variable en un arreglo
             {
                 variablesActivas[k]=res[i].substr(5,tamaño-7); // pq queremos el nombre de la variable , entonces tenemos 6 caracteres en el de lectura que son l,e,e,r, ,;
                 k++;
             }
         }
-        if(res[i].match(/^(imprimir )/g)!=null)
+        if(res[i].match(/^(imprimir )/g)!=null) // si tiene imprimir
         {
             checarImpresion(res[i]);
 
         }
-        if(res[i].match(/( := )/g)!=null)
+        if(res[i].match(/(:=)/g)!=null) // si tiene una asignación
         {
 
             checarAsignacion(res[i]);
@@ -109,44 +112,23 @@ function checarFormatoInstrucciones(numlineas)
     }
 }
 
-function checarLectura(linea)
-{
-
-    
-    if(linea.match(/^(leer )([a-z])([0-9a-z]*)(;)(\r)$/g)!=null) // si escribio la palabra programa y el nombre tiene formato
-    {
-            console.log("paso el test del nombre de la variable");  
-            return true;      
-    }
-    else
-    {
-        if(linea.match(/([a-z])([0-9a-z]*)(;)(\r)$/)==null) // el nombre no tiene formato
-        {
-                error=true;
-                tipoerror="";
-                especificacion+= ", no se cumple con el formato de lectura pedido";
-                return false;
-        }
-            
-    }
-}
 
 
+
+// se checa que la impresion esté correcta
 function checarImpresion(linea)
 {
-
     if(linea.match(/^(imprimir )([a-z])([0-9a-z]*)(;)(\r)$/g)!=null) // si escribio la palabra programa y el nombre tiene formato
     {
             console.log("paso el test de la impresion de la variable");             
     }
     else
     {
-        if(linea.match(/([a-z])([0-9a-z]*)(;)(\r)$/)==null) // el nombre no tiene formato
-        {
-                error=true;
-                tipoerror="";
-                especificacion+= ", no se cumple con el formato de impresion pedido";
-        }
+        
+        error=true;
+        tipoerror="Sintaxis";
+        especificacion+= ", no se cumple con el formato de impresion pedido";
+        
             
     }
 }
@@ -219,8 +201,22 @@ function checarExpresionReemplazandoVariablesActivas(expresion)
 
 }
 
-
-
+//se checa si es correcta la lectura con el formato de variable
+function checarLectura(linea)
+{
+    if(linea.match(/^(leer )([a-z])([0-9a-z]*)(;)(\r)$/g)!=null) // si escribio la palabra programa y el nombre tiene formato
+    {
+            console.log("paso el test del nombre de la variable");  
+            return true;      
+    }
+    else
+    {
+            error=true;
+            tipoerror="Sintaxis";
+            especificacion+= ", no se cumple con el formato de lectura pedido";
+            return false;
+    }
+}
 
 // funcion que checa que el nombre del programa sea valido y que tenga solamente "iniciar" y "terminar" en la 2da y ultima línea
 // tengamos en cuenta que si llegamos a esta funcion entonces hay puras lineas con palabras reservadas

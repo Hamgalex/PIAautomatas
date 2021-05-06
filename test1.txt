@@ -1,4 +1,4 @@
-programa 1final12;
+programa final12;
 iniciar
 leer i;
 leer j;
