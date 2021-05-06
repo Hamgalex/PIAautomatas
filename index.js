@@ -108,10 +108,6 @@ function checarFormatoInstrucciones(numlineas)
     }
 }
 
-
-
-
-
 function checarAsignacion(linea)
 {
     var variableNuevaActiva;
@@ -128,10 +124,12 @@ function checarAsignacion(linea)
     else //si tiene " := " y punto y coma con salto de linea.
     {
 
-        var exporiginal=linea
+        var exporiginal=linea;
+        
         for(i=0;i<k;i++)
         {
-            linea=linea.replace(variablesActivas[i],1);   
+           // linea=linea.replace(variablesActivas[i],1);   
+            linea=linea.replace(new RegExp(variablesActivas[i], 'g'),1); 
             console.log(linea);
         }
 

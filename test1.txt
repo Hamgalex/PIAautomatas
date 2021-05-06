@@ -4,6 +4,6 @@ leer i;
 leer j;
 leer k;
 p := 1+2;
-q := (((((p)))))+1;
+q := (((((p)))))+p+p+p+p;
 imprimir q;
 terminar.
