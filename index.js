@@ -27,6 +27,8 @@ input.addEventListener('change',function(e){
 
         if(error==false)checarCaracteresInvalidos(numlineas);
 
+        if(error==false)checarVariables(numlineas);
+
         //tenemos asegurado que no hay lineas en blanco
         if(error==false)checarPalabrasReservadas(numlineas);
 
@@ -54,9 +56,6 @@ input.addEventListener('change',function(e){
         }
         else   
         document.getElementById("error").innerHTML ="No hay errores";
-
-    
-        console.log(isValid("1/1/0"));
            
     }
 },false);
@@ -165,26 +164,6 @@ function checarAsignacion(linea)
     }
 }
 
-function ChecarDivEntreCero(expresion)
-{
-    expresion=expresion.replace(/0(\+|\-|\*|\/|\^)0/g,"0");
-
-    
-    if(expresion.match(/\/(0|\(0)/i)==null )
-    {
-        console.log("se divide entre cero: "+expresion);
-        return true;
-        
-    }
-        
-    else    
-    {
-        console.log("no se divide entre cero: "+expresion);
-        return false;
-    }
-        
-}
-
 //checar si la exp es valida con eval()
 function isValid(origExp) {
 	const exp = (' ' + origExp + ' ')
@@ -196,42 +175,6 @@ function isValid(origExp) {
 	} catch (e) {
 		return false;
 	}
-}
-
-//no sirve de nada esto
-function checarExpresionReemplazandoVariablesActivas(expresion)
-{
-
-    var i;
-    console.log("tamaño del arreglo:" + k);
-
-    console.log("aqui va lo de reemplazar las variables, expresion inicial: "+expresion);
-
-    for(i=0;i<k;i++)
-    {
-        expresion=expresion.replace(variablesActivas[i],1);   
-        console.log(expresion);
-    }
-    var expresionfinal=expresion;
-
-    console.log("Expresionfinal:");
-    console.log(expresionfinal);
-
-    
-     if(expresionfinal.match(/^((\d+|\(\g<1>\))([-+*\/^]\g<1>)?)(;)(\r)$/g)!=null)
-    {
-        console.log("si se pudo");
-    }
-    else
-    {
-        error=true;
-        especificacion+="| Error de sintaxis: Error en la expresion aritmetica"+expresion;
-        console.log("no se pudo");
-        console.log(expresionfinal.match(/^((\d+|\(\g<1>\))([-+*\/^]\g<1>)?)(\r)$/));
-    }
-   
-    
-
 }
 
 
@@ -254,7 +197,7 @@ function checarImpresion(linea)
 
             error=true;
             especificacion="Error de Sintaxis: No existe la variable que trata de imprimir";
-            console.log("impreison");             
+            console.log("impresion");             
             console.log(arregloexpimp);
             console.log(variable);
     }
@@ -369,4 +312,42 @@ function checarSaltosDeLinea(numlineas)
         }
     }
     return;
+}
+
+function checarVariables(numlineas){
+
+    var i;
+
+    for(i=0;i<numlineas;i++)
+    {
+        if(res[i].match(/^(programa )/g)!=null && error==false)
+            if(res[i].match(/^(programa )([a-z])([0-9a-z]*)(;)(\r)$/g)==null  && error==false)
+            {
+                error=true;
+                especificacion="Error Léxico: La variable no tiene formato en linea: "+(i+1);
+            }
+            
+        if(res[i].match(/^(leer )/g)!=null && error==false)
+            if(res[i].match(/^(leer )([a-z])([0-9a-z]*)(;)(\r)$/g)==null  && error==false)
+            {
+                error=true;
+                especificacion="Error Léxico: La variable no tiene formato en linea: "+(i+1);
+            } 
+        
+        if(res[i].match(/( := )/g)!=null && error==false)
+        {
+            if(res[i].match(/^([a-z])([0-9a-z]*)( := )/g)==null  && error==false)
+            {
+                error=true;
+                especificacion="Error Léxico: La variable no tiene formato en linea: "+(i+1);
+            }    
+        }
+
+        if(res[i].match(/^(imprimir )/g)!=null && error==false)
+            if(res[i].match(/^(imprimir )([a-z])([0-9a-z]*)(;)(\r)$/g)==null  && error==false)
+            {
+                error=true;
+                especificacion="Error Léxico: La variable no tiene formato en linea: "+(i+1);
+            } 
+    }
 }

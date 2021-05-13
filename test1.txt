@@ -1,5 +1,4 @@
-programa final12;
+programa 1final12;
 iniciar
-leer z;
-imprimir z;
-terminar
+leer z12345;
+terminar.
