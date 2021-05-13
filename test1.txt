@@ -1,9 +1,5 @@
 programa final12;
 iniciar
-leer i;
-leer j;
-leer k;
-p := 1+2;
-q := (((((p)))))+p+p+p+p;
-imprimir q;
-terminar.
+leer z;
+imprimir z;
+terminar
