@@ -27,10 +27,11 @@ input.addEventListener('change',function(e){
 
         if(error==false)checarCaracteresInvalidos(numlineas);
 
-        if(error==false)checarVariables(numlineas);
 
         //tenemos asegurado que no hay lineas en blanco
         if(error==false)checarPalabrasReservadas(numlineas);
+
+        if(error==false)checarVariables(numlineas);
 
         //tenemos asegurado que no hay lineas en blanco && que todas las lineas tienen palabras reservadas
         if(error==false)checarInstruccionesRepetidas(numlineas);
@@ -321,14 +322,14 @@ function checarVariables(numlineas){
     for(i=0;i<numlineas;i++)
     {
         if(res[i].match(/^(programa )/g)!=null && error==false)
-            if(res[i].match(/^(programa )([a-z])([0-9a-z]*)(;)(\r)$/g)==null  && error==false)
+            if(res[i].match(/^(programa)( )+([a-z])([0-9a-z]*)(;)(\r)$/g)==null  && error==false)
             {
                 error=true;
                 especificacion="Error Léxico: La variable no tiene formato en linea: "+(i+1);
             }
             
         if(res[i].match(/^(leer )/g)!=null && error==false)
-            if(res[i].match(/^(leer )([a-z])([0-9a-z]*)(;)(\r)$/g)==null  && error==false)
+            if(res[i].match(/^(leer)( )+([a-z])([0-9a-z]*)(;)(\r)$/g)==null  && error==false)
             {
                 error=true;
                 especificacion="Error Léxico: La variable no tiene formato en linea: "+(i+1);
@@ -336,7 +337,7 @@ function checarVariables(numlineas){
         
         if(res[i].match(/( := )/g)!=null && error==false)
         {
-            if(res[i].match(/^([a-z])([0-9a-z]*)( := )/g)==null  && error==false)
+            if(res[i].match(/^([a-z])([0-9a-z]*)( )+(:= )/g)==null  && error==false)
             {
                 error=true;
                 especificacion="Error Léxico: La variable no tiene formato en linea: "+(i+1);
@@ -344,7 +345,7 @@ function checarVariables(numlineas){
         }
 
         if(res[i].match(/^(imprimir )/g)!=null && error==false)
-            if(res[i].match(/^(imprimir )([a-z])([0-9a-z]*)(;)(\r)$/g)==null  && error==false)
+            if(res[i].match(/^(imprimir)( )+([a-z])([0-9a-z]*)(;)(\r)$/g)==null  && error==false)
             {
                 error=true;
                 especificacion="Error Léxico: La variable no tiene formato en linea: "+(i+1);

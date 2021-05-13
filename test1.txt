@@ -1,4 +1,9 @@
-programa 1final12;
+programa final12;
 iniciar
-leer z12345;
+leer a;
+leer b;
+leer c;
+imprimir a;
+c := a*b/2;
+imprimir c;
 terminar.
