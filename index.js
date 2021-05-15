@@ -126,8 +126,14 @@ function checarAsignacion(linea)
         
         for(i=0;i<k;i++)
         {
-           // linea=linea.replace(variablesActivas[i],1);   
-            linea=linea.replace(new RegExp(variablesActivas[i], 'g'),1); 
+           
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\+", 'g'),"1+");
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\-", 'g'),"1-"); 
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\*", 'g'),"1*");  
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\/", 'g'),"1/"); 
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\^", 'g'),"1^"); 
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\)", 'g'),"1)"); 
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\;", 'g'),"1;"); 
             console.log(linea);
         }
 
@@ -143,10 +149,11 @@ function checarAsignacion(linea)
         expresion=expresion.replace(/\^/g,"**");
         expresion=expresion.replace(/\+/g,"/");
         expresion=expresion.replace(/-/g,"/");
-        if(isValid(expresion)==true && expresion.match(/[a-zA-z]/i)==null && expresion.match(/( )/i)==null && eval(expresionsinreemplazo)!=Infinity) // si es valida y tiene el formato
+        if(isValid(expresion)==true && expresion.match(/[a-zA-z]/i)==null && expresion.match(/( )/i)==null && eval(expresionsinreemplazo)!=Infinity && eval(expresionsinreemplazo)!=-Infinity) // si es valida y tiene el formato
         {
          
             console.log("si es valida: "+expresion);
+           
         }
         else
         {
@@ -159,7 +166,7 @@ function checarAsignacion(linea)
 
         console.log(variableNuevaActiva);
         console.log(expresion);
-        
+        console.log(eval(expresionsinreemplazo));
         variablesActivas[k]=variableNuevaActiva;
         k++;
     }

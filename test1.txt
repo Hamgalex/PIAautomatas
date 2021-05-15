@@ -3,7 +3,10 @@ iniciar
 leer a;
 leer b;
 leer c;
+leer a1;
+leer b1;
+leer c1;
 imprimir a;
-c := a*b/2;
+c := a1+b1*a/c1-(b1/a);
 imprimir c;
 terminar.
