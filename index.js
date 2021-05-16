@@ -145,19 +145,37 @@ function checarAsignacion(linea)
         
         expresion=arreglodeexpresion[2];
         expresionsinreemplazo=expresion;
+        expresionsinreemplazo=expresionsinreemplazo.replace(/\(0\)/g,"0");
+
         expresion=expresion.replace(";","");
         expresion=expresion.replace(/\^/g,"**");
         expresion=expresion.replace(/\+/g,"/");
+        expresion=expresion.replace(/-1/g,"1");
+        expresion=expresion.replace(/-2/g,"2");
+        expresion=expresion.replace(/-3/g,"3");
+        expresion=expresion.replace(/-4/g,"4");
+        expresion=expresion.replace(/-5/g,"5");
+        expresion=expresion.replace(/-6/g,"6");
+        expresion=expresion.replace(/-7/g,"7");
+        expresion=expresion.replace(/-8/g,"8");
+        expresion=expresion.replace(/-9/g,"9");
+        
         expresion=expresion.replace(/-/g,"/");
-        if(isValid(expresion)==true && expresion.match(/[a-zA-z]/i)==null && expresion.match(/( )/i)==null && eval(expresionsinreemplazo)!=Infinity && eval(expresionsinreemplazo)!=-Infinity) // si es valida y tiene el formato
+        if(isValid(expresion)==true && expresion.match(/[a-zA-z]/i)==null && expresion.match(/( )/i)==null  ) // si es valida y tiene el formato
         {
-         
+            if(expresionsinreemplazo.match(/\/0/i)!=null )
+            {
+                error=true;
+
+                especificacion="Error de Sintaxis: división entre cero: "+ exporiginal;
+            }
+            else
             console.log("si es valida: "+expresion);
            
         }
         else
         {
-            console.log("la expresion:"+expresion+":no es valida");
+            console.log("la expresion: "+expresion+" :no es valida");
             error=true;
 
             especificacion="Error de Sintaxis: error en la expresion aritmética: "+ exporiginal;
@@ -166,7 +184,6 @@ function checarAsignacion(linea)
 
         console.log(variableNuevaActiva);
         console.log(expresion);
-        console.log(eval(expresionsinreemplazo));
         variablesActivas[k]=variableNuevaActiva;
         k++;
     }
