@@ -1,8 +1,8 @@
-programa final12;
+programa a;
 iniciar
 leer a;
-p := a/(-2)+(0)-0+0-0;
-q := p+1;
-x := q*p*a;
-imprimir x;
+leer b;
+leer c;
+leer d;
+e := a+b/(-2)+c+d;
 terminar.

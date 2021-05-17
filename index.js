@@ -123,17 +123,18 @@ function checarAsignacion(linea)
     {
 
         var exporiginal=linea;
+
+        linea=linea.replace(/(\+|\-|\/|\*|\^)(-)[1-9]/g,"+1");
         
         for(i=0;i<k;i++)
         {
-           
-            linea=linea.replace(new RegExp(variablesActivas[i]+"\\+", 'g'),"1+");
-            linea=linea.replace(new RegExp(variablesActivas[i]+"\\-", 'g'),"1-"); 
-            linea=linea.replace(new RegExp(variablesActivas[i]+"\\*", 'g'),"1*");  
-            linea=linea.replace(new RegExp(variablesActivas[i]+"\\/", 'g'),"1/"); 
-            linea=linea.replace(new RegExp(variablesActivas[i]+"\\^", 'g'),"1^"); 
-            linea=linea.replace(new RegExp(variablesActivas[i]+"\\)", 'g'),"1)"); 
-            linea=linea.replace(new RegExp(variablesActivas[i]+"\\;", 'g'),"1;"); 
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\+", 'g'),(i+1)*7+"+");
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\-", 'g'),(i+1)*7+"-"); 
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\*", 'g'),(i+1)*7+"*");  
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\/", 'g'),(i+1)*7+"/"); 
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\^", 'g'),(i+1)*7+"^"); 
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\)", 'g'),(i+1)*7+")"); 
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\;", 'g'),(i+1)*7+";"); 
             console.log(linea);
         }
 
@@ -145,32 +146,28 @@ function checarAsignacion(linea)
         
         expresion=arreglodeexpresion[2];
         expresionsinreemplazo=expresion;
-        expresionsinreemplazo=expresionsinreemplazo.replace(/\(0\)/g,"0");
+
+        console.log("expresionsinrepmazo: "+expresionsinreemplazo);
 
         expresion=expresion.replace(";","");
         expresion=expresion.replace(/\^/g,"**");
-        expresion=expresion.replace(/\+/g,"/");
-        expresion=expresion.replace(/-1/g,"1");
-        expresion=expresion.replace(/-2/g,"2");
-        expresion=expresion.replace(/-3/g,"3");
-        expresion=expresion.replace(/-4/g,"4");
-        expresion=expresion.replace(/-5/g,"5");
-        expresion=expresion.replace(/-6/g,"6");
-        expresion=expresion.replace(/-7/g,"7");
-        expresion=expresion.replace(/-8/g,"8");
-        expresion=expresion.replace(/-9/g,"9");
-        
-        expresion=expresion.replace(/-/g,"/");
-        if(isValid(expresion)==true && expresion.match(/[a-zA-z]/i)==null && expresion.match(/( )/i)==null  ) // si es valida y tiene el formato
+
+        expresion=expresion.replace(/\+\-/g,"?");
+        expresion=expresion.replace(/\-\+/g,"?");
+
+        if(isValid(expresion)==true && expresion.match(/[a-zA-z]/i)==null && expresion.match(/( )/i)==null && expresion[0]!="-" && expresion[0]!="+" && exporiginal.match(/[0-9][0-9]/i)==null && eval(expresion)!= Infinity && eval(expresion)!=-Infinity) // si es valida y tiene el formato
         {
-            if(expresionsinreemplazo.match(/\/0/i)!=null )
+            if(expresionsinreemplazo.match(/\/0/i)==null && expresionsinreemplazo.match(/\?/i)==null && expresionsinreemplazo.match(/\/\(0\)/i)==null )
+            {
+                console.log("si es valida: "+expresion);
+                
+            }
+            else
             {
                 error=true;
 
                 especificacion="Error de Sintaxis: división entre cero: "+ exporiginal;
             }
-            else
-            console.log("si es valida: "+expresion);
            
         }
         else
