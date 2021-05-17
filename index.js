@@ -128,13 +128,14 @@ function checarAsignacion(linea)
         
         for(i=0;i<k;i++)
         {
-            linea=linea.replace(new RegExp(variablesActivas[i]+"\\+", 'g'),(i+1)*7+"+");
-            linea=linea.replace(new RegExp(variablesActivas[i]+"\\-", 'g'),(i+1)*7+"-"); 
-            linea=linea.replace(new RegExp(variablesActivas[i]+"\\*", 'g'),(i+1)*7+"*");  
-            linea=linea.replace(new RegExp(variablesActivas[i]+"\\/", 'g'),(i+1)*7+"/"); 
-            linea=linea.replace(new RegExp(variablesActivas[i]+"\\^", 'g'),(i+1)*7+"^"); 
-            linea=linea.replace(new RegExp(variablesActivas[i]+"\\)", 'g'),(i+1)*7+")"); 
-            linea=linea.replace(new RegExp(variablesActivas[i]+"\\;", 'g'),(i+1)*7+";"); 
+            var rand=Math.floor((Math.random() * 10) + 1);
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\+", 'g'),(i+rand)*7+"+");
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\-", 'g'),(i+rand)*7+"-"); 
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\*", 'g'),(i+rand)*7+"*");  
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\/", 'g'),(i+rand)*7+"/"); 
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\^", 'g'),(i+rand)*7+"^"); 
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\)", 'g'),(i+rand)*7+")"); 
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\;", 'g'),(i+rand)*7+";"); 
             console.log(linea);
         }
 
@@ -155,9 +156,9 @@ function checarAsignacion(linea)
         expresion=expresion.replace(/\+\-/g,"?");
         expresion=expresion.replace(/\-\+/g,"?");
 
-        if(isValid(expresion)==true && expresion.match(/[a-zA-z]/i)==null && expresion.match(/( )/i)==null && expresion[0]!="-" && expresion[0]!="+" && exporiginal.match(/[0-9][0-9]/i)==null && eval(expresion)!= Infinity && eval(expresion)!=-Infinity) // si es valida y tiene el formato
+        if(isValid(expresion)==true && expresion.match(/[a-zA-z]/i)==null && expresion.match(/( )/i)==null && expresion[0]!="-" && expresion[0]!="+" && exporiginal.match(/[0-9][0-9]/i)==null ) // si es valida y tiene el formato
         {
-            if(expresionsinreemplazo.match(/\/0/i)==null && expresionsinreemplazo.match(/\?/i)==null && expresionsinreemplazo.match(/\/\(0\)/i)==null )
+            if(expresionsinreemplazo.match(/\/0/i)==null && expresionsinreemplazo.match(/\?/i)==null && expresionsinreemplazo.match(/\/\(0\)/i)==null && eval(expresion)!= Infinity && eval(expresion)!=-Infinity)
             {
                 console.log("si es valida: "+expresion);
                 

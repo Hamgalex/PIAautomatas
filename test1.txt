@@ -4,5 +4,5 @@ leer a;
 leer b;
 leer c;
 leer d;
-e := a+b/(-2)+c+d;
+e := a+b/(a+a);
 terminar.
