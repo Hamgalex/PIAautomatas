@@ -4,6 +4,6 @@ leer i;
 leer j;
 leer k;
 p := i+j*2;
-q := -1+(p*k)/1p;
+q := i*j*(-123)/(+(-(-(-(-(-(-(-(+1)))))))));
 imprimir q;
 terminar.

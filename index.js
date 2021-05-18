@@ -126,18 +126,23 @@ function checarAsignacion(linea)
         expresion1=linea.split(" ");
         varchecarinicio=expresion1[2];
 
+        
+            
+        
+
+
         linea=linea.replace(/(\+|\-|\/|\*|\^)(-)[1-9]/g,"+1");
         
         for(i=0;i<k;i++)
         {
             var rand=Math.floor((Math.random() * 20) + 1);
-            linea=linea.replace(new RegExp("\\+"+variablesActivas[i], 'g'),"+"+(i+rand)*7);
-            linea=linea.replace(new RegExp("\\-"+variablesActivas[i], 'g'),"-"+(i+rand)*7); 
-            linea=linea.replace(new RegExp("\\*"+variablesActivas[i], 'g'),"*"+(i+rand)*7);  
-            linea=linea.replace(new RegExp("\\/"+variablesActivas[i], 'g'),"/"+(i+rand)*7); 
-            linea=linea.replace(new RegExp("\\^"+variablesActivas[i], 'g'),"^"+(i+rand)*7); 
-            linea=linea.replace(new RegExp("\\("+variablesActivas[i], 'g'),"("+(i+rand)*7); 
-            linea=linea.replace(new RegExp(" "+variablesActivas[i], 'g')," "+(i+rand)*7); 
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\+", 'g'),(i+rand)*7+"+");
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\-", 'g'),(i+rand)*7+"-"); 
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\*", 'g'),(i+rand)*7+"*");  
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\/", 'g'),(i+rand)*7+"/"); 
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\^", 'g'),(i+rand)*7+"^"); 
+            linea=linea.replace(new RegExp(variablesActivas[i]+"\\)", 'g'),(i+rand)*7+")"); 
+            linea=linea.replace(new RegExp(variablesActivas[i]+";", 'g'),(i+rand)*7); 
             console.log(linea);
         }
 
@@ -158,9 +163,9 @@ function checarAsignacion(linea)
         expresion=expresion.replace(/\+\-/g,"?");
         expresion=expresion.replace(/\-\+/g,"?");
 
-        if(isValid(expresion)==true && expresion.match(/[a-zA-z]/i)==null && expresion.match(/( )/i)==null &&varchecarinicio.match(/^(\+|-)[a-z]/i)==null) // si es valida y tiene el formato
+        if(isValid(expresion)==true && expresion.match(/[a-zA-z]/i)==null && expresion.match(/( )/i)==null &&varchecarinicio.match(/^(\+|-)[a-z]/i)==null &&varchecarinicio.match(/\((\+|-)[a-z]/i)==null && varchecarinicio.match(/(\+|\-|\*|\*|\^|\/|\()[0-9][a-z]/i)==null  && varchecarinicio.match(/^[0-9][a-z]/i)==null) // si es valida y tiene el formato
         {
-            if(expresionsinreemplazo.match(/\/0/i)==null && expresionsinreemplazo.match(/\?/i)==null && expresionsinreemplazo.match(/\/\(0\)/i)==null && eval(expresion)!= Infinity && eval(expresion)!=-Infinity)
+            if(expresionsinreemplazo.match(/\/0/i)==null && expresionsinreemplazo.match(/\?/i)==null && expresionsinreemplazo.match(/\/\(0\)/i)==null && eval(expresion)!= Infinity && eval(expresion)!=-Infinity && eval(expresion)!=NaN)
             {
                 console.log("si es valida: "+expresion);
                 
@@ -169,7 +174,7 @@ function checarAsignacion(linea)
             {
                 error=true;
 
-                especificacion="Error de Sintaxis: división entre cero: "+ exporiginal+". Sugerencia: Este programa sólamente calcula con números reales, trate de que las divisiones den resultados reales.";
+                especificacion="Error de Sintaxis: Número no real: "+ exporiginal+". Sugerencia: Este programa sólamente calcula con números reales, trate de que las divisiones den resultados reales.";
             }
            
         }
@@ -183,7 +188,8 @@ function checarAsignacion(linea)
         }
 
         console.log(variableNuevaActiva);
-        console.log(expresion);
+        console.log("cero entre cero: "+0**0);
+        console.log(0/0);
         variablesActivas[k]=variableNuevaActiva;
         k++;
     }
