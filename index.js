@@ -27,10 +27,6 @@ input.addEventListener('change',function(e){
 
         if(error==false)checarCaracteresInvalidos(numlineas);
 
-
-        //tenemos asegurado que no hay lineas en blanco
-        if(error==false)checarPalabrasReservadas(numlineas);
-
         if(error==false)checarVariables(numlineas);
 
         //tenemos asegurado que no hay lineas en blanco && que todas las lineas tienen palabras reservadas
@@ -38,6 +34,8 @@ input.addEventListener('change',function(e){
 
         //tenemos asegurado que todas las lineas de cabecera son válidas y no se repite el programa,iniciar ni terminar.
         if(error==false)checarEstructuraPrograma(numlineas);
+
+        if(error==false)checarPalabrasReservadas(numlineas)
     
         //-if(error==false)checarInstruccionesValidas(numlineas);   <----- creo que esto esta de mas
 
@@ -70,7 +68,7 @@ function checarInstruccionesValidas(numlineas){
         if(res[i].match(/( := )/g)==null && res[i].match(/^(leer )/g)==null && res[i].match(/^(imprimir )/g)==null && res[i].match(/^(programa )/g)==null && res[i].match(/^(iniciar)/g)==null  && res[i].match(/^(terminar)/g)==null)
         {
             error=true;
-            especificacion="Error Sintáctico: No se reconoce el comando en linea "+(i+1)+":"+res[i];
+            especificacion="Error Sintaxis: no se reconoce la instrucción en línea "+(i+1)+".¿Se refirió a una asignación? Sugerencia: Ocupe ':='.";
         }
     }
 }
@@ -116,19 +114,23 @@ function checarAsignacion(linea)
     if(linea.match(/^([a-z])([0-9a-z]*)( := )/)==null || linea.match(/(;)(\r)$/)==null  && error==false ) // si el nombre de la variable no es valido o no tiene punto y coma
     {
         error=true;
-        especificacion="Error sintaxis: no se cumple con el formato de variable o asignación: '"+linea+"'";
+        especificacion="Error sintaxis: no se cumple con el formato de variable o asignación '"+linea+"'. Sugerencia: Recuerde usar el formato de identificadores que muestra el manual.";
 
     }
     else //si tiene " := " y punto y coma con salto de linea.
     {
 
         var exporiginal=linea;
+        var expresion1,varchecarinicio;
+
+        expresion1=linea.split(" ");
+        varchecarinicio=expresion1[2];
 
         linea=linea.replace(/(\+|\-|\/|\*|\^)(-)[1-9]/g,"+1");
         
         for(i=0;i<k;i++)
         {
-            var rand=Math.floor((Math.random() * 10) + 1);
+            var rand=Math.floor((Math.random() * 20) + 1);
             linea=linea.replace(new RegExp(variablesActivas[i]+"\\+", 'g'),(i+rand)*7+"+");
             linea=linea.replace(new RegExp(variablesActivas[i]+"\\-", 'g'),(i+rand)*7+"-"); 
             linea=linea.replace(new RegExp(variablesActivas[i]+"\\*", 'g'),(i+rand)*7+"*");  
@@ -156,7 +158,7 @@ function checarAsignacion(linea)
         expresion=expresion.replace(/\+\-/g,"?");
         expresion=expresion.replace(/\-\+/g,"?");
 
-        if(isValid(expresion)==true && expresion.match(/[a-zA-z]/i)==null && expresion.match(/( )/i)==null && expresion[0]!="-" && expresion[0]!="+" && exporiginal.match(/[0-9][0-9]/i)==null ) // si es valida y tiene el formato
+        if(isValid(expresion)==true && expresion.match(/[a-zA-z]/i)==null && expresion.match(/( )/i)==null &&varchecarinicio.match(/^(\+|-)[a-z]/i)==null ) // si es valida y tiene el formato
         {
             if(expresionsinreemplazo.match(/\/0/i)==null && expresionsinreemplazo.match(/\?/i)==null && expresionsinreemplazo.match(/\/\(0\)/i)==null && eval(expresion)!= Infinity && eval(expresion)!=-Infinity)
             {
@@ -167,7 +169,7 @@ function checarAsignacion(linea)
             {
                 error=true;
 
-                especificacion="Error de Sintaxis: división entre cero: "+ exporiginal;
+                especificacion="Error de Sintaxis: división entre cero: "+ exporiginal+". Sugerencia: Este programa sólamente calcula con números reales, trate de que las divisiones den resultados reales.";
             }
            
         }
@@ -176,7 +178,7 @@ function checarAsignacion(linea)
             console.log("la expresion: "+expresion+" :no es valida");
             error=true;
 
-            especificacion="Error de Sintaxis: error en la expresion aritmética: "+ exporiginal;
+            especificacion="Error de Sintaxis: error en la expresion aritmética: "+ exporiginal+". Sugerencia: intente seguir las reglas de las expresiones aritméticas que se encuentran en el manual de usuario.";
 
         }
 
@@ -219,7 +221,7 @@ function checarImpresion(linea)
             }
 
             error=true;
-            especificacion="Error de Sintaxis: No existe la variable que trata de imprimir";
+            especificacion="Error de Sintaxis: No existe la variable que trata de imprimir. Sugerencia: No es posible imprimir una variable a la cual no se le ha asignado espacio en memoria, trate de imprimir variables existentes.";
             console.log("impresion");             
             console.log(arregloexpimp);
             console.log(variable);
@@ -229,7 +231,7 @@ function checarImpresion(linea)
         
         error=true;
 
-        especificacion= "Error de Sintaxis:  no se cumple con el formato de impresión: '"+linea+"'";
+        especificacion= "Error de Sintaxis:  no se cumple con el formato de impresión: '"+linea+"'. Sugerencia: recuerde usar el formato de impresion descrito en el manual.";
         
             
     }
@@ -246,7 +248,7 @@ function checarLectura(linea)
     else
     {
             error=true;
-            especificacion= "Error Sintaxis: no se cumple con el formato de lectura en la línea: '"+linea+"'";
+            especificacion= "Error Sintaxis: no se cumple con el formato de lectura en la línea: '"+linea+"'. Sugerencia: Trate de usar el formato de impresión que se vió en el manual.";
             return false;
     }
 }
@@ -259,17 +261,17 @@ function checarEstructuraPrograma(numlineas)
     if(res[0].match(/^(programa )([a-z])([0-9a-z]*)(;)(\r)$/g)==null  && error==false) // si no escribio la palabra programa y el nombre tiene formato
     {
         error=true;
-        especificacion= "Error Sintaxis: no se encuentra el nombre del programa";
+        especificacion= "Error Sintaxis: no se encuentra el nombre del programa. Sugerencia: Trate de usar el formato de la cabecera del programa que se vió en el manual.";
     }
     if(res[1].match(/^(iniciar)(\r)$/g)==null)
     {
         error=true;
-        especificacion="Error Sintaxis: no se encuentra el inicio del programa";
+        especificacion="Error Sintaxis: no se encuentra el inicio del programa. Sugerencia: Trate de usar el formato del inicio del programa que se vió en el manual.";
     }
     if(res[numlineas-1].match(/^(terminar.)$/g)==null)
     {
         error=true;
-        especificacion="Error Sintaxis : no se encuentra la terminación del programa";
+        especificacion="Error Sintaxis : no se encuentra la terminación del programa. Sugerencia: Trate de usar el formato de la terminación del programa que se vió en el manual.";
     }
 }
 
@@ -282,7 +284,7 @@ function checarInstruccionesRepetidas(numlineas)
         if(res[i].match(/^(programa)/g)!=null || res[i].match(/^(iniciar)/g)!=null || res[i].match(/^(terminar)/g)!=null  && error==false)
         {
             error=true;
-            especificacion="Error Sintaxis: se repiten comandos de cabecera";
+            especificacion="Error Sintaxis: se repiten instrucciones de cabecera. Sugerencia: No repita las instrucciones de cabecera";
         }
     }
 }
@@ -296,28 +298,14 @@ function checarCaracteresInvalidos(numlineas)
         if(res[i].match(/[^(a-z0-9|\+| |\-|\*|\/|\^|\(|\)|;|.|:|=|\r]/i)!=null  && error==false)
         {
             error=true;
-            especificacion="Error Léxico: no se reconoce el caracter en la linea "+(i+1)+" '"+res[i].match(/[^(a-z0-9|\+| |\-|\*|\/|\^|\(|\)|;|.|:|=]/i)+"'";
+            especificacion="Error Léxico: no se reconoce el caracter en la linea "+(i+1)+". Sugerencia: Ocupe carácteres válidos.";
         }
     }
 }
 
 // funcion que checará que en cada linea del programa haya palabras reservadas, osea: programa ,iniciar,leer, := ,imprimir y terminar
 // observemos que esta es la única manera que pueda haber un error léxico
-function checarPalabrasReservadas(numlineas)
-{
-    var i;
-    for(i=0;i<numlineas;i++)
-    {
-        if(res[i].match(/^(programa)/g)==null && res[i].match(/^(iniciar)/g)==null && res[i].match(/^(leer)/g)==null && res[i].match(/(:=)/g)==null && res[i].match(/^(imprimir)/g)==null && res[i].match(/^(terminar.)/g)==null   && error==false)
-        {
-            error=true;
-            especificacion="Error Sintaxis: en línea"+(i+1)+":"+res[i];
-        }
-    }
 
-
-
-}
 
 
 // funcion que checa que no haya lineas en blanco
@@ -329,7 +317,7 @@ function checarSaltosDeLinea(numlineas)
         if(res[i].match(/^\r$/g)!=null || res[i].match(/^$/g)!=null || res[i].match(/^( )+(\r)$/g)!=null) // si hay un \r o no hay nada o hay espacios en blanco manda error
         {
             error=true;
-            especificacion="Error Léxico: Linea "+(i+1)+" en blanco";
+            especificacion="Error Léxico: línea "+(i+1)+" en blanco. Sugerencia: No escriba líneas en blanco.";
             console.log("hay linea en blanco en posicion "+i);
             return;
         }
@@ -343,26 +331,26 @@ function checarVariables(numlineas){
 
     for(i=0;i<numlineas;i++)
     {
-        if(res[i].match(/^(programa )/g)!=null && error==false)
-            if(res[i].match(/^(programa)( )+([a-z])([0-9a-z]*)(;)(\r)$/g)==null  && error==false)
+        if(res[i].match(/^(programa +)/g)!=null && error==false)
+            if(res[i].match(/^(programa)( )+([a-z])([0-9a-z]*)/g)==null  && error==false)
             {
                 error=true;
-                especificacion="Error Léxico: La variable no tiene formato en linea: "+(i+1);
+                especificacion="Error Léxico: el identificador no tiene formato en línea "+(i+1)+". Sugerencia: Siga el formato de identificadores según el manual.";
             }
             
-        if(res[i].match(/^(leer )/g)!=null && error==false)
-            if(res[i].match(/^(leer)( )+([a-z])([0-9a-z]*)(;)(\r)$/g)==null  && error==false)
+        if(res[i].match(/^(leer +)/g)!=null && error==false)
+            if(res[i].match(/^(leer)( )+([a-z])([0-9a-z]*)/g)==null  && error==false)
             {
                 error=true;
-                especificacion="Error Léxico: La variable no tiene formato en linea: "+(i+1);
+                especificacion="Error Léxico: la variable no tiene formato en línea "+(i+1)+". Sugerencia: los identificadores deberán iniciar con una letra seguido de (0 o más) letras y/o dígitos.";
             } 
         
-        if(res[i].match(/( := )/g)!=null && error==false)
+        if(res[i].match(/( +:= )/g)!=null && error==false)
         {
-            if(res[i].match(/^([a-z])([0-9a-z]*)( )+(:= )/g)==null  && error==false)
+            if(res[i].match(/^([a-z])([0-9a-z]*)/g)==null  && error==false)
             {
                 error=true;
-                especificacion="Error Léxico: La variable no tiene formato en linea: "+(i+1);
+                especificacion="Error Léxico: la variable no tiene formato en línea "+(i+1)+". Sugerencia: los identificadores deberán iniciar con una letra seguido de (0 o más) letras y/o dígitos.";
             }    
         }
 
@@ -370,7 +358,23 @@ function checarVariables(numlineas){
             if(res[i].match(/^(imprimir)( )+([a-z])([0-9a-z]*)(;)(\r)$/g)==null  && error==false)
             {
                 error=true;
-                especificacion="Error Léxico: La variable no tiene formato en linea: "+(i+1);
+                especificacion="Error Léxico: la variable no tiene formato en línea "+(i+1)+". Sugerencia: los identificadores deberán iniciar con una letra seguido de (0 o más) letras y/o dígitos.";
             } 
     }
+}
+
+function checarPalabrasReservadas(numlineas)
+{
+    var i;
+    for(i=2;i<numlineas-1;i++)
+    {
+        if(res[i].match(/^(leer)/g)==null && res[i].match(/(:=)/g)==null && res[i].match(/^(imprimir)/g)==null && error==false)
+        {
+            error=true;
+            especificacion="Error Sintaxis: no se reconoce la instrucción en línea "+(i+1)+".¿Se refirió a una asignación? Sugerencia: Ocupe ':='.";
+        }
+    }
+
+
+
 }

@@ -1,8 +1,9 @@
-programa a;
+programa a1;
 iniciar
 leer a;
 leer b;
 leer c;
 leer d;
-e := a+b/(a+a);
+e := a/(a-a)+21;
+imprimir a;
 terminar.
