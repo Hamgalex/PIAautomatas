@@ -1,9 +1,9 @@
-programa a1;
+programa final12;
 iniciar
-leer a;
-leer b;
-leer c;
-leer d;
-e := a/(a-a)+21;
-imprimir a;
+leer i;
+leer j;
+leer k;
+p := i+j*2;
+q := -1+(p*k)/1p;
+imprimir q;
 terminar.
