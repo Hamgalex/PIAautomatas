@@ -164,7 +164,7 @@ function checarAsignacion(linea)
         expresion=expresion.replace(/\+\-/g,"?");
         expresion=expresion.replace(/\-\+/g,"?");
 
-        if(isValid(expresion)==true && expresion.match(/[a-zA-z]/i)==null && expresion.match(/( )/i)==null &&varchecarinicio.match(/^(\+|-)[a-z]/i)==null &&varchecarinicio.match(/\((\+|-)[a-z]/i)==null && varchecarinicio.match(/(\+|\-|\*|\*|\^|\/|\()[0-9][a-z]/i)==null  && varchecarinicio.match(/^[0-9][a-z]/i)==null) // si es valida y tiene el formato
+        if(isValid(expresion)==true && expresion.match(/[a-zA-z]/i)==null && expresion.match(/( )/i)==null &&varchecarinicio.match(/^(\+|-)[a-z]/i)==null &&varchecarinicio.match(/\((\+|-)[a-z]/i)==null && varchecarinicio.match(/(\+|\-|\*|\*|\^|\/|\()[0-9][a-z]/i)==null  && varchecarinicio.match(/^[0-9][a-z]/i)==null && varchecarinicio.match(/\./i)==null && varchecarinicio.match(/\((\+|\-)\(/i)==null) // si es valida y tiene el formato
         {
             if(expresionsinreemplazo.match(/\/0/i)==null && expresionsinreemplazo.match(/\?/i)==null && expresionsinreemplazo.match(/\/\(0\)/i)==null && eval(expresion)!= Infinity && eval(expresion)!=-Infinity && eval(expresion)!=NaN)
             {

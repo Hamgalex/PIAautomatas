@@ -1,9 +1,7 @@
 programa final12;
 iniciar
 leer i;
-leer j;
-leer k;
-p := i+j*2;
-q := j/01;
-imprimir q;
+leer i1;
+q := i+((((((((i1))))))));
+imprimir (q);
 terminar.
