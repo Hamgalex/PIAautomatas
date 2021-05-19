@@ -132,6 +132,7 @@ function checarAsignacion(linea)
 
 
         linea=linea.replace(/(\+|\-|\/|\*|\^)(-)[1-9]/g,"+1");
+        linea=linea.replace(/0+[1-9][0-9]*/g,"13");
         
         for(i=0;i<k;i++)
         {
