@@ -1,7 +1,7 @@
 programa final12;
 iniciar
-leer i!;
+leer i;
 leer i1;
 q := i;
-imprimir (q);
+imprimir q;
 terminar.

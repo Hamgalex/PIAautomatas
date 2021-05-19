@@ -13,8 +13,6 @@ input.addEventListener('change',function(e){
     console.log(input.files);
     const reader=new FileReader();
     reader.readAsText(input.files[0]);
-    
-
 
     reader.onload=function(){
         console.log(reader.result);
